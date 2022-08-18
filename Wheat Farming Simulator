@@ -1,0 +1,315 @@
+local library = loadstring(game:GetObjects("rbxassetid://7657867786")[1].Source)()
+local Wait = library.subs.Wait -- Only returns if the GUI has not been terminated. For 'while Wait() do' loops
+local PepsisWorld = library:CreateWindow({
+Name = "Script made by Pryxo#0690",
+Themeable = {
+Info = "Discord Server: VzYTJ7Y"
+}
+})
+
+-- // Toggle //
+_G.Farm = false
+_G.Sell = false
+_G.Speed = false
+_G.RWS = false
+_G.Rebirth = false
+_G.MRebirth = false
+_G.ESP = false
+_G.ATame = false
+_G.Gem = false
+-- // Tabs //
+local GeneralTab = PepsisWorld:CreateTab({
+Name = "General"
+})
+local MiscTab = PepsisWorld:CreateTab({
+Name = "Misc"
+})
+-- // Sections //
+local InfoSection = GeneralTab:CreateSection({
+Name = "Info"
+})
+local FarmingSection = GeneralTab:CreateSection({
+Name = "Farming"
+})
+local AutoBuy = GeneralTab:CreateSection({
+Name = "Buy Stuff"
+})
+local Misc = GeneralTab:CreateSection({
+Name = "Misc",
+Side = "Right"
+})
+local Pet = GeneralTab:CreateSection({
+Name = "Pet",
+Side = "Right"
+})
+local MiscSection = MiscTab:CreateSection({
+Name = "Misc"
+})
+-- // Local //
+local Range = 100
+local CFrameEnd = CFrame.new(0, 0, 0) -- Place your coords in here
+local Time = 8
+Pets = {}
+-- // Functions // 
+InfoSection:AddLabel({Name = "Best Range is 100"})
+InfoSection:AddLabel({Name = "When using more then 100 you"})
+InfoSection:AddLabel({Name = "get a high ping!!!"})
+
+FarmingSection:AddSlider({Name = "Farming Range",Value = 100,Min = 0,Max = 125,Format = function(Value)
+	Range = Value
+	return "Farming Range: " .. tostring(Value)
+end
+})
+FarmingSection:AddToggle({Name = "Auto Farm",Callback = function(a)
+    _G.Farm = a
+end}
+)
+FarmingSection:AddToggle({Name = "AI Farm",Callback = function(a)
+    _G.AI = a
+end}
+)
+FarmingSection:AddToggle({Name = "Rainbow Wheat Sniper",Callback = function(a)
+    _G.RWS = a
+end}
+)
+FarmingSection:AddToggle({Name = "Auto Collect Gems",Callback = function(a)
+    _G.Gems = a
+end}
+)
+
+AutoBuy:AddToggle({Name = "Auto Buy lvl 10 Tool",Callback = function(a)
+    _G.ATool = a
+end}
+)
+AutoBuy:AddToggle({Name = "Auto Rebirth",Callback = function(a)
+    _G.Rebirth = a
+end}
+)
+AutoBuy:AddToggle({Name = "Auto Mega Rebirth",Callback = function(a)
+    _G.MRebirth = a
+end}
+)
+AutoBuy:AddToggle({Name = "Auto Sell",Callback = function(a)
+    _G.Sell = a
+end}
+)
+local selectedPet
+local PetList = {"Bot Overlord","Angelfly","Zombie Dragon","Buttermyths","Octohex","Ultimus","Light Dragon","Zap"}
+Pet:AddSearchBox({
+  Name="Pets to Buy",
+  List=PetList,
+  Callback=function(value)
+      selectedPet=value
+      print(value)
+      end
+})
+
+Pet:AddTextbox({
+Name = "Add Pet",
+    Callback=function(value)
+      table.insert(PetList,value)
+    end
+})
+Pet:AddButton({
+Name = "Remove Selected Pet",
+Callback = function()
+table.remove(PetList, table.find(PetList, selectedPet))
+end
+})
+
+
+Pet:AddToggle({Name = "Pet ESP",Callback = function(a)
+    _G.ESP = a
+end}
+)
+Pet:AddLabel({Name = "Rejoin to see"})
+Pet:AddLabel({Name = "the Pets you tamed"})
+Pet:AddToggle({Name = "Tame Pets From Dropdown",Callback = function(a)
+    _G.ATame = a
+end}
+)
+
+
+
+Misc:AddToggle({Name = "Speed 100",Callback = function(a)
+    _G.Speed = a
+end}
+)
+-- // MISC //
+MiscSection:AddSlider({Name = "FOV",Value = 70,Min = 0,Max = 200,Format = function(Value)
+	game:GetService'Workspace'.Camera.FieldOfView = Value
+	return "FOV: " .. tostring(Value)
+end
+})
+MiscSection:AddSlider({Name = "Speed",Value = 16,Min = 0,Max = 200,Format = function(Value)
+	game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+	return "Speed: " .. tostring(Value)
+end
+})
+MiscSection:AddSlider({Name = "Jump Power",Value = 50,Min = 0,Max = 200,Format = function(Value)
+	game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+	return "Jump Power: " .. tostring(Value)
+end
+})
+
+
+
+spawn(function()
+    while wait(1) do
+        if _G.Farm then
+			for i,v in pairs(workspace:GetChildren()) do
+				if string.find(v.Name, "Wheat") and v:IsA("Model") then
+					if (game.Players.LocalPlayer.Character.PrimaryPart.Position - v:FindFirstChild("Primary").Position).Magnitude < Range then
+						for i2,v2 in pairs(v:GetChildren()) do
+							if v2:IsA("Vector3Value") then
+								game:GetService("ReplicatedStorage").RemoteEvents.Harvest:FireServer({v[v2.Name]})
+							end
+						end
+					end
+				end
+			end
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if _G.AI then
+		    CFrameEnd = CFrame.new(548, 46, -273)
+            local tween =  game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Time), {CFrame = CFrameEnd})
+            tween:Play()
+            tween.Completed:Wait()
+            
+            CFrameEnd = CFrame.new(548, 46, 296)
+            local tween =  game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Time), {CFrame = CFrameEnd})
+            tween:Play()
+            tween.Completed:Wait()
+            
+            CFrameEnd = CFrame.new(-11, 46, 296)
+            local tween =  game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Time), {CFrame = CFrameEnd})
+            tween:Play()
+            tween.Completed:Wait()
+            
+            CFrameEnd = CFrame.new(-11, 46, -273)
+            local tween =  game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Time), {CFrame = CFrameEnd})
+            tween:Play()
+            tween.Completed:Wait()
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if _G.Gems then
+            for i,v in pairs(workspace:GetChildren()) do
+                if v.Name == "Crystal" then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,v,0)
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,v,1)
+                end
+            end
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if _G.RWS then
+            for i,v in pairs(workspace:GetChildren()) do
+            	if string.find(v.Name, "RainbowWheat") and v:IsA("Model") then
+            	    local b = string.split(v.Name, "RainbowWheat")
+            		game:GetService("ReplicatedStorage").RemoteEvents.Harvest:FireServer({v[b[2]]})
+                end
+            end
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if _G.ATool then
+            local a = game:GetService("ReplicatedStorage").RemoteFunctions.GetData:InvokeServer()
+            local Harvester = {}
+            for i,v in pairs(a.HarvesterLevels) do
+            	if not table.find(Harvester,i) then
+                    table.insert(Harvester,i)
+                end
+            end
+            
+            for i,v in pairs(game:GetService("ReplicatedStorage").Harvesters:GetChildren()) do
+                if not table.find(Harvester,v.Name) then
+                    game:GetService("ReplicatedStorage").RemoteFunctions.Purchase:InvokeServer(v.Name,10)
+                end
+            end
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if _G.Rebirth then
+            game:GetService("ReplicatedStorage").RemoteFunctions.Rebirth:InvokeServer()
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if _G.MRebirth then
+            game:GetService("ReplicatedStorage").RemoteFunctions.Rebirth:InvokeServer(true)
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if _G.ESP then
+            for i,v in pairs(game:GetService("ReplicatedStorage").Pets:GetChildren()) do
+                if v.ClassName == "Model" then
+                    if not table.find(Pets,v.Name) then
+                        table.insert(Pets,v.Name)
+                    end
+                end
+            end
+            for __,v in pairs(workspace:GetChildren()) do -- the path
+                if table.find(Pets, v.Name) and not v:FindFirstChild("ElectricPPPGUI") then -- the item
+                    local a = Instance.new("BillboardGui",v) -- pretty much explains everything
+                    a.Name = "ElectricPPPGUI"
+                    a.Size = UDim2.new(10,0, 10,0)
+                    a.AlwaysOnTop = true
+                    local b = Instance.new("Frame",a)
+                    b.Size = UDim2.new(1,0, 1,0)
+                    b.BackgroundTransparency = 0.80
+                    b.BorderSizePixel = 0
+                    b.BackgroundColor3 = Color3.new(0, 255, 0)
+                    local c = Instance.new('TextLabel',b)
+                    c.Size = UDim2.new(2,0,2,0)
+                    c.BorderSizePixel = 0
+                    c.TextSize = 20
+                    c.Text = v.Name
+                    c.BackgroundTransparency = 1
+                end
+            end
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if _G.ATame then
+			for i,v in pairs(workspace:GetChildren()) do
+                if table.find(PetList, v.Name) then
+                    game:GetService("ReplicatedStorage").RemoteFunctions.Tame:InvokeServer(v,v.Name)
+                end
+            end
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if _G.Sell then
+			firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,game:GetService("Workspace").Sell,0)
+			firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,game:GetService("Workspace").Sell,1)
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if _G.Speed then
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100
+        else 
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
+        end
+    end
+end)
