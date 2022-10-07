@@ -1,0 +1,103 @@
+if not game:IsLoaded() then game.Loaded:Wait() end
+if game.PlaceId == 10675066724 then end
+repeat task.wait() until game:GetService("Players"):WaitForChild(game:GetService("Players").LocalPlayer.Name):WaitForChild("PlayerGui"):WaitForChild("MainMenu"):WaitForChild("Home"):WaitForChild("Buttons"):WaitForChild("Play") 
+wait(3)
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local function clickButton(button)
+    local absolutePosition = button.AbsolutePosition
+    local absoluteSize = button.absoluteSize
+    local x,y = absolutePosition.X + absoluteSize.X / 2, absolutePosition.Y + absoluteSize.Y / 2 + 35
+    VirtualInputManager:SendMouseButtonEvent(x, y, 0, true, game, 1)
+    VirtualInputManager:SendMouseButtonEvent(x, y, 0, false, game, 1)
+end
+local JSON
+local HttpService = game:service('HttpService')
+local function LoadSettings()
+    local HttpService = game:service('HttpService')
+    if isfile('AutoSlimeEXE.txt') then
+        getgenv().Settings = HttpService:JSONDecode(readfile('AutoSlimeEXE.txt'))
+    end
+end
+local function SaveSettings()
+    local JSON
+    local HttpService = game:service('HttpService') -- used for the JSON DECODE AND ENCODE
+    JSON = HttpService:JSONEncode(getgenv().Settings)
+    writefile('AutoSlimeEXE.txt',JSON)
+end
+clickButton(game:GetService("Players").LocalPlayer.PlayerGui.MainMenu.Home.Buttons.Play)
+
+getgenv().Settings = {
+Collect = false,
+Deposit = false,
+Merge = false,
+Slimes = false,
+DropRate = false,
+CompleteAll = false
+};
+LoadSettings()
+SaveSettings()
+spawn(function()
+    while wait() do
+        if Settings.Collect then
+            for i,v in pairs(Workspace.Drops:GetChildren()) do
+                v.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            end
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if Settings.Deposit then
+            game:GetService("ReplicatedStorage").GTycoonClient.Remotes.DepositDrops:FireServer()
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if Settings.Merge then
+            game:GetService("ReplicatedStorage").GTycoonClient.Remotes.MergeDroppers:FireServer()
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if Settings.Merge then
+            game:GetService("ReplicatedStorage").GTycoonClient.Remotes.MergeDroppers:FireServer()
+        end
+    end
+end)
+
+spawn(function()
+    while wait() do
+        if Settings.Slimes then
+            game:GetService("ReplicatedStorage").GTycoonClient.Remotes.BuyDropper:FireServer(100)
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if Settings.DropRate then
+			game:GetService("ReplicatedStorage").GTycoonClient.Remotes.BuySpeed:FireServer(1)
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if Settings.CompleteAll then
+            for i = 1,11 do
+                local CheckPoint = "ObbyCheckpoint"..i
+                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,game:GetService("Workspace").ObbyCheckpoints[CheckPoint],0)
+                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,game:GetService("Workspace").ObbyCheckpoints[CheckPoint],1)
+                wait(0.6)
+            end
+            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, game:GetService("Workspace").ObbyButton3.Button, 0)
+            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, game:GetService("Workspace").ObbyButton3.Button, 1)
+        end
+    end
+end)
+
+game:GetService("Players").LocalPlayer.PlayerGui.Chat.Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:Connect(function(child)
+    if child.TextLabel.Text == "Take a break. Maximum obby boosts per play session has been reached." then
+        game:Shutdown()
+    end
+end)
