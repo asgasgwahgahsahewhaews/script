@@ -148,7 +148,7 @@ spawn(function()
 end)
 spawn(function()
     while wait() do
-        if Settings.Boost then
+        if _G.Boost then
     		pcall(function()
                 for i,v in pairs(workspace:GetChildren()) do
                     if v.Name == "Pumpkin_Scavenger" then
