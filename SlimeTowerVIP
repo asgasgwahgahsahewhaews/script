@@ -62,7 +62,10 @@ Farming:AddToggle({Name = "Auto Buy Drop Rate",Callback = function(a)
     _G.DropRate = a
 end}
 )
-
+Farming:AddToggle({Name = "Auto Boost",Callback = function(a)
+    _G.Boost = a
+end}
+)
 Buy:AddTextbox({
 Name = "Amount of Slimes to Buy",
     Callback=function(value)
