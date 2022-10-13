@@ -31,9 +31,10 @@ Collect = false,
 Deposit = false,
 Merge = false,
 Slimes = false,
+SlimesAmount = 1,
 DropRate = false,
 CompleteAll = false,
-Boost = true
+Boost = false
 };
 LoadSettings()
 SaveSettings()
@@ -71,7 +72,7 @@ end)
 spawn(function()
     while wait() do
         if Settings.Slimes then
-            game:GetService("ReplicatedStorage").GTycoonClient.Remotes.BuyDropper:FireServer(100)
+            game:GetService("ReplicatedStorage").GTycoonClient.Remotes.BuyDropper:FireServer(Settings.SlimesAmount)
         end
     end
 end)
