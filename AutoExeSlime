@@ -32,7 +32,8 @@ Deposit = false,
 Merge = false,
 Slimes = false,
 DropRate = false,
-CompleteAll = false
+CompleteAll = false,
+Boost = true
 };
 LoadSettings()
 SaveSettings()
@@ -78,6 +79,21 @@ spawn(function()
     while wait() do
         if Settings.DropRate then
 			game:GetService("ReplicatedStorage").GTycoonClient.Remotes.BuySpeed:FireServer(1)
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if Settings.Boost then
+    		pcall(function()
+                for i,v in pairs(workspace:GetChildren()) do
+                    if v.Name == "Pumpkin_Scavenger" then
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v["JackO'Lantern"].CFrame
+                        task.wait(0.1)
+                        fireproximityprompt(v["JackO'Lantern"].ProximityPrompt)
+                    end
+                end
+            end)
         end
     end
 end)
