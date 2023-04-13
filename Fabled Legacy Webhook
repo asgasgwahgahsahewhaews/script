@@ -1,0 +1,127 @@
+if not game:IsLoaded() then
+	game.Loaded:Wait()
+end
+if game.PlaceId ~= 11872917490 then
+	repeat
+		task.wait()
+	until game:FindFirstChild("Workspace")
+	repeat
+		task.wait()
+	until game:FindFirstChild("Players")
+	if _G.Executed == nil then
+		_G.Executed = true
+		--XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+		local Loot = {}
+		local Name = nil
+		local Rarity = nil
+        local Color = getgenv().Config.NormalSideColor
+		local PlayerName = game.Players.LocalPlayer.Name
+		local PhysPower = nil
+		local SpellPower = nil
+		local Upgrades = nil
+		local Ping = nil
+		local Version = "2.0.8"
+        local Time = "10:00"
+        local LVL = nil
+        local XP = nil
+        local Gold = nil
+        local Pot = nil
+        local Stats1 = nil
+        local Stats2 = nil
+        
+        function formatNum(p1) -- Line: 6
+            return string.format("%02i", p1);
+        end
+        function formatTimer(p2) -- Line: 10
+            local v1 = (p2 - p2 % 60) / 60;
+                p2 = p2 - v1 * 60;
+            return formatNum(v1) .. ":" .. formatNum(p2);
+        end
+		--XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+		game:GetService("Players").LocalPlayer.PlayerGui.ChildAdded:Connect(function(child)
+			if child:IsA("StringValue") then
+                Time = formatTimer(workspace.roomInformation.timeLeft.Value)
+				Name = child:WaitForChild("itemName").Value
+				Rarity = child:WaitForChild("itemRarity").Value
+				local colour
+				if Rarity == "common" then
+					colour = ":white_circle:"
+				elseif Rarity == "uncommon" then
+					colour = ":green_circle:"
+				elseif Rarity == "rare" then
+					colour = ":blue_circle:"
+				elseif Rarity == "epic" then
+					colour = ":purple_circle:"
+				elseif Rarity == "legendary" then
+					colour = ":orange_circle:"
+				elseif Rarity == "heirloom" then
+					colour = ":black_circle:"
+				else
+					colour = ":warning:"
+				end
+				if child.itemType.Value == "spells" then
+					PhysPower = "N/A"
+					SpellPower = "N/A"
+					Upgrades = "N/A"
+					Stats1 = colour.." "..Name
+                    Stats2 = "```m\n-```"
+				else
+					PhysPower = child.physicalPower.Value
+					SpellPower = child.spellPower.Value
+					Upgrades = child.maxUpgrades.Value
+                    if child.physicalPower.Value > child.spellPower.Value then
+                        Pot = child.physicalPower.Value + child.maxUpgrades.Value
+                    elseif child.physicalPower.Value < child.spellPower.Value then
+                        Pot = child.spellPower.Value + child.maxUpgrades.Value
+                    end
+                    Stats1 = colour.." "..Name.." | " ..tostring(Pot)
+                    Stats2 = "```m\nPhys Power = "..PhysPower.."\nSpell Power = "..SpellPower.."\nUpgrades = "..Upgrades.."```"
+				end
+				if getgenv().Config.HideName then
+					PlayerName = "||" .. game.Players.LocalPlayer.Name .. "||"
+				end
+				if table.find(getgenv().Config.PingOnRarity, child.itemRarity.Value) then
+					Ping = "<@" .. getgenv().Config.DiscordID .. ">"
+                    Color = getgenv().Config.WhenPingSideColor
+				end
+				table.insert(Loot, {["name"] = Stats1,["value"] = Stats2,})
+                LVL = game:GetService("Players").LocalPlayer.PlayerGui.playerData.Frame.levelFrame.TextLabel.Text
+                XP = game:GetService("Players").LocalPlayer.PlayerGui.playerData.Frame.xpFrame.TextLabel.Text
+                Gold = game:GetService("Players").LocalPlayer.PlayerGui.playerData.Frame.currencyFrame.Coins.Text 
+			end
+		end)
+		game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
+			if State == Enum.TeleportState.RequestedFromServer then
+                if #Loot > 1 then
+				local msg = {
+					["content"] = Ping,
+					["embeds"] = {
+						{
+							["title"] = "Dungeon Drops | "..Time.. " | " .. PlayerName,
+							["color"] = Color,
+							["fields"] = Loot,
+							["footer"] = {
+								["text"] = "⭐ LVL: "..LVL.." | "..XP.." | Gold: "..Gold.." ⭐\nMade by Pryxo • Version " .. Version,
+							},
+							["timestamp"] = DateTime.now():ToIsoDate(),
+						},
+                    },
+                    ["username"] = "Fabled Legacy Loot Drops",
+					["avatar_url"] = "https://cdn.discordapp.com/icons/1046775262303494155/a1cf46f0c7b7f3ba41a0e9cc50375e52.webp?size=96",
+				}
+
+				request = http_request or request or HttpPost or syn.request
+				request({
+					Url = getgenv().Config.Webhook,
+					Method = "POST",
+					Headers = {
+						["Content-Type"] = "application/json",
+					},
+					Body = game:GetService("HttpService"):JSONEncode(msg),
+				})
+                end
+			end
+		end)
+	end
+	print("Webhook Ready")
+end
