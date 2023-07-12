@@ -14,13 +14,13 @@ if game.PlaceId ~= 11872917490 then
 		local Loot = {}
 		local Name = nil
 		local Rarity = nil
-        local Color = getgenv().Config.NormalSideColor
+        local Color = Config.NormalSideColor
 		local PlayerName = game.Players.LocalPlayer.Name
 		local PhysPower = nil
 		local SpellPower = nil
 		local Upgrades = nil
 		local Ping = nil
-		local Version = "3.0.0"
+		local Version = "3.1.0"
         local Time = "10:00"
         local LVL = nil
         local XP = nil
@@ -28,7 +28,9 @@ if game.PlaceId ~= 11872917490 then
         local Pot = nil
         local Stats1 = nil
         local Stats2 = nil
-        
+        local Armor = {"helmets","armors","legs"}
+        local Class = nil
+
         function formatNum(p1) -- Line: 6
             return string.format("%02i", p1);
         end
@@ -69,20 +71,29 @@ if game.PlaceId ~= 11872917490 then
 					PhysPower = child.physicalPower.Value
 					SpellPower = child.spellPower.Value
 					Upgrades = child.maxUpgrades.Value
-                    if child.physicalPower.Value > child.spellPower.Value then
-                        Pot = child.physicalPower.Value + child.maxUpgrades.Value
-                    elseif child.physicalPower.Value < child.spellPower.Value then
-                        Pot = child.spellPower.Value + child.maxUpgrades.Value
+                    if string.find(Name, "Guardian") and table.find(Armor,child.itemType.Value) then
+                        Pot = child.health.Value + Upgrades
+                        Class = "Guardian"
+                    elseif PhysPower > SpellPower then
+                        Pot = PhysPower + Upgrades
+                        Class = "Warrior"
+                    elseif PhysPower < SpellPower then
+                        Pot = SpellPower + Upgrades
+                        Class = "Mage"
                     end
-                    Stats1 = colour.." "..Name.." | " ..tostring(Pot)
-                    Stats2 = "```m\nPhys Power = "..PhysPower.."\nSpell Power = "..SpellPower.."\nUpgrades = "..Upgrades.."```"
+                    Stats1 = colour.." "..Name
+                    if table.find(Armor,child.itemType.Value) then
+                        Stats2 = "```m\nHealth = "..child.health.Value.."\nMax Pot = "..Pot.."```"
+                    else
+                        Stats2 = "```m\nClass = "..Class.."\nMax Pot = "..Pot.."```"
+                    end
 				end
-				if getgenv().Config.HideName then
+				if Config.HideName then
 					PlayerName = "||" .. game.Players.LocalPlayer.Name .. "||"
 				end
-				if table.find(getgenv().Config.PingOnRarity, child.itemRarity.Value) then
-					Ping = "<@" .. getgenv().Config.DiscordID .. ">"
-                    Color = getgenv().Config.WhenPingSideColor
+				if table.find(Config.PingOnRarity, child.itemRarity.Value) then
+					Ping = "<@" .. Config.DiscordID .. ">"
+                    Color = Config.WhenPingSideColor
 				end
 				table.insert(Loot, {["name"] = Stats1,["value"] = Stats2,})
                 LVL = game:GetService("Players").LocalPlayer.PlayerGui.playerData.Frame.levelFrame.TextLabel.Text
@@ -107,12 +118,12 @@ if game.PlaceId ~= 11872917490 then
 						},
                     },
                     ["username"] = "Fabled Legacy Loot Drops",
-					["avatar_url"] = "https://cdn.discordapp.com/icons/1046775262303494155/a1cf46f0c7b7f3ba41a0e9cc50375e52.webp?size=96",
+					["avatar_url"] = "https://cdn.discordapp.com/icons/1046775262303494155/8196a5e833dbe7b11bcf50071ed3da55.webp?size=96",
 				}
 
 				request = http_request or request or HttpPost or syn.request
 				request({
-					Url = getgenv().Config.Webhook,
+					Url = Config.Webhook,
 					Method = "POST",
 					Headers = {
 						["Content-Type"] = "application/json",
