@@ -14,13 +14,13 @@ if game.PlaceId ~= 11872917490 then
 		local Loot = {}
 		local Name = nil
 		local Rarity = nil
-        local Color = Config.NormalSideColor
+        local Color = Webhook.NormalSideColor
 		local PlayerName = game.Players.LocalPlayer.Name
 		local PhysPower = nil
 		local SpellPower = nil
 		local Upgrades = nil
 		local Ping = nil
-		local Version = "3.1.0"
+		local Version = "3.1.1"
         local Time = "10:00"
         local LVL = nil
         local XP = nil
@@ -88,12 +88,12 @@ if game.PlaceId ~= 11872917490 then
                         Stats2 = "```m\nClass = "..Class.."\nMax Pot = "..Pot.."```"
                     end
 				end
-				if Config.HideName then
+				if Webhook.HideName then
 					PlayerName = "||" .. game.Players.LocalPlayer.Name .. "||"
 				end
-				if table.find(Config.PingOnRarity, child.itemRarity.Value) then
-					Ping = "<@" .. Config.DiscordID .. ">"
-                    Color = Config.WhenPingSideColor
+				if table.find(Webhook.PingOnRarity, child.itemRarity.Value) then
+					Ping = "<@" .. Webhook.DiscordID .. ">"
+                    Color = Webhook.WhenPingSideColor
 				end
 				table.insert(Loot, {["name"] = Stats1,["value"] = Stats2,})
                 LVL = game:GetService("Players").LocalPlayer.PlayerGui.playerData.Frame.levelFrame.TextLabel.Text
@@ -123,7 +123,7 @@ if game.PlaceId ~= 11872917490 then
 
 				request = http_request or request or HttpPost or syn.request
 				request({
-					Url = Config.Webhook,
+					Url = Webhook.Webhook,
 					Method = "POST",
 					Headers = {
 						["Content-Type"] = "application/json",
